@@ -62,7 +62,7 @@ export default function AdminFeedbacksPage() {
     const supabase = createClient()
     await supabase
       .from('feedbacks')
-      .update({ status })
+      .update({ status } as Record<string, unknown>)
       .eq('id', id)
     fetchFeedbacks()
     if (selectedFeedback?.id === id) {
