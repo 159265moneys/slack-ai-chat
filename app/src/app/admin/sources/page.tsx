@@ -77,20 +77,21 @@ export default async function AdminSourcesPage({
   
   // メタデータからユニークな値を取得
   type SourceMetadata = { phase?: string; company?: string; poster?: string }
+  type SourceItem = { metadata?: SourceMetadata }
   
   const phases = [...new Set(
     sources
-      ?.map(s => (s.metadata as SourceMetadata)?.phase)
-      .filter(p => p && p !== '無記載') || []
+      ?.map((s: SourceItem) => s.metadata?.phase)
+      .filter((p: string | undefined) => p && p !== '無記載') || []
   )].sort()
   
   // 会社名は正規化してユニーク化
   const rawCompanies = sources
-    ?.map(s => (s.metadata as SourceMetadata)?.company)
-    .filter(c => c && c !== '無記載') || []
+    ?.map((s: SourceItem) => s.metadata?.company)
+    .filter((c: string | undefined) => c && c !== '無記載') || []
   
   const companyMap = new Map<string, string>()
-  rawCompanies.forEach(company => {
+  rawCompanies.forEach((company: string | undefined) => {
     if (company) {
       const normalized = normalizeCompanyName(company)
       if (normalized && !companyMap.has(normalized)) {
@@ -102,8 +103,8 @@ export default async function AdminSourcesPage({
   
   const posters = [...new Set(
     sources
-      ?.map(s => (s.metadata as SourceMetadata)?.poster)
-      .filter(p => p && p !== '無記載') || []
+      ?.map((s: SourceItem) => s.metadata?.poster)
+      .filter((p: string | undefined) => p && p !== '無記載') || []
   )].sort()
 
   return (
