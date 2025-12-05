@@ -1,12 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
-import { Copy, Check, BookOpen, ArrowRight } from 'lucide-react'
+import { Copy, Check, BookOpen, ArrowRight, Clock } from 'lucide-react'
 import { ChatHeader } from '@/components/chat'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
+import Link from 'next/link'
+
+// Coming Soon フラグ - falseにすると元の機能が使える
+const COMING_SOON = true
 
 interface Correction {
   type: string
@@ -24,6 +29,29 @@ interface ReviewResult {
 }
 
 export default function ReviewPage() {
+  // Coming Soon表示
+  if (COMING_SOON) {
+    return (
+      <div className="min-h-screen gradient-bg flex items-center justify-center p-6">
+        <div className="glass rounded-2xl p-12 text-center max-w-md">
+          <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-6">
+            <Clock className="w-10 h-10 text-gray-500" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Coming Soon</h1>
+          <p className="text-gray-600 mb-8">
+            添削機能は現在準備中です。
+            <br />
+            もうしばらくお待ちください。
+          </p>
+          <Link href="/">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              トップに戻る
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
   const [inputText, setInputText] = useState('')
   const [result, setResult] = useState<ReviewResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)

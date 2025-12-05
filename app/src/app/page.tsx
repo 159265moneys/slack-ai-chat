@@ -71,27 +71,29 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* 添削モード */}
-            <Link href="/chat/review" className="block">
-              <div className="glass rounded-2xl p-8 card-hover cursor-pointer group">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-6">
+            {/* 添削モード - Coming Soon */}
+            <div className="block">
+              <div className="glass rounded-2xl p-8 opacity-60 cursor-not-allowed relative overflow-hidden">
+                <div className="absolute top-4 right-4 bg-gray-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                  Coming Soon
+                </div>
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center mb-6">
                   <FileEdit className="w-7 h-7" />
                 </div>
                 
-                <h2 className="text-2xl font-bold mb-3">添削する</h2>
+                <h2 className="text-2xl font-bold mb-3 text-gray-500">添削する</h2>
                 
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-400 mb-6">
                   ソースの例文やルールを参考に
                   <br />
                   文章を添削・改善します
                 </p>
                 
-                <div className="flex items-center text-purple-400 font-medium group-hover:gap-3 gap-2 transition-all">
-                  <span>添削を始める</span>
-                  <ArrowRight className="w-4 h-4" />
+                <div className="flex items-center text-gray-400 font-medium gap-2">
+                  <span>準備中...</span>
                 </div>
               </div>
-            </Link>
+            </div>
           </div>
 
           {/* 特徴セクション */}
