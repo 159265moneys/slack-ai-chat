@@ -60,9 +60,10 @@ export default function AdminFeedbacksPage() {
 
   const updateStatus = async (id: string, status: 'pending' | 'reviewed' | 'resolved') => {
     const supabase = createClient()
-    await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any)
       .from('feedbacks')
-      .update({ status } as Record<string, unknown>)
+      .update({ status })
       .eq('id', id)
     fetchFeedbacks()
     if (selectedFeedback?.id === id) {
