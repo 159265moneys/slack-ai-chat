@@ -47,7 +47,9 @@ export async function POST(request: NextRequest) {
 
     // チャットログを保存
     const supabase = createServiceClient()
-    await supabase.from('chat_logs').insert({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
+    await db.from('chat_logs').insert({
       session_id,
       mode: 'review',
       question: text,

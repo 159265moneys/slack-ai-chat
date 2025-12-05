@@ -11,6 +11,13 @@ import {
   Slack
 } from 'lucide-react'
 
+interface Feedback {
+  id: string
+  rating: number | null
+  question: string
+  created_at: string
+}
+
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
   
@@ -20,16 +27,21 @@ export default async function AdminDashboardPage() {
     redirect('/admin/login')
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any
+
   // 統計情報を取得
   const [
     { count: sourcesCount },
     { count: feedbacksCount },
-    { data: recentFeedbacks }
+    { data: recentFeedbacksData }
   ] = await Promise.all([
-    supabase.from('sources').select('*', { count: 'exact', head: true }).eq('is_active', true),
-    supabase.from('feedbacks').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-    supabase.from('feedbacks').select('*').order('created_at', { ascending: false }).limit(5)
+    db.from('sources').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    db.from('feedbacks').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    db.from('feedbacks').select('*').order('created_at', { ascending: false }).limit(5)
   ])
+  
+  const recentFeedbacks = recentFeedbacksData as Feedback[] | null
 
   const stats = [
     {

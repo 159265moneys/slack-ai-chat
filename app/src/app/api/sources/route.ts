@@ -68,9 +68,11 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit
 
     const supabase = createServiceClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
 
     // クエリ構築
-    let query = supabase
+    let query = db
       .from('sources')
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })

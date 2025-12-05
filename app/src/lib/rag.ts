@@ -88,13 +88,15 @@ export async function searchSources(
   } = options
 
   const supabase = createServiceClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any
 
   try {
     // クエリをベクトル化
     const embedding = await createEmbedding(query)
     
     // 直接SQLでベクトル検索を実行
-    let dbQuery = supabase
+    let dbQuery = db
       .from('sources')
       .select('id, title, content, embedding, metadata')
       .eq('is_active', true)
@@ -169,7 +171,7 @@ export async function searchSources(
     // フォールバック: キーワード検索
     const keywords = query.split(/\s+/).filter(k => k.length > 1)
     
-    let fallbackQuery = supabase
+    let fallbackQuery = db
       .from('sources')
       .select('id, title, content')
       .eq('is_active', true)
@@ -357,8 +359,10 @@ export async function registerSource(
   
   // Supabaseに保存
   const supabase = createServiceClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any
   
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from('sources')
     .insert({
       title,
@@ -390,6 +394,8 @@ export async function updateSource(
   }
 ): Promise<Source> {
   const supabase = createServiceClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any
   
   // contentが更新される場合はEmbeddingも再生成
   let embedding: number[] | undefined
@@ -397,7 +403,7 @@ export async function updateSource(
     embedding = await createEmbedding(updates.content)
   }
   
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from('sources')
     .update({
       ...(updates.title && { title: updates.title }),

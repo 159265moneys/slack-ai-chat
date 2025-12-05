@@ -14,8 +14,10 @@ export async function GET(
   try {
     const { id } = await params
     const supabase = await createClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
 
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from('sources')
       .select('*')
       .eq('id', id)
@@ -46,6 +48,8 @@ export async function PUT(
   try {
     const { id } = await params
     const supabase = await createClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
     const body = await request.json()
 
     const { title, content } = body
@@ -58,7 +62,7 @@ export async function PUT(
     }
 
     // 内容が変更されていたらベクトルを再生成
-    const { data: existing } = await supabase
+    const { data: existing } = await db
       .from('sources')
       .select('content')
       .eq('id', id)
@@ -78,7 +82,7 @@ export async function PUT(
       updateData.embedding = JSON.stringify(embedding)
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from('sources')
       .update(updateData)
       .eq('id', id)
@@ -114,9 +118,11 @@ export async function DELETE(
   try {
     const { id } = await params
     const supabase = await createClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
 
     // 論理削除（is_active = false）
-    const { error } = await supabase
+    const { error } = await db
       .from('sources')
       .update({ is_active: false })
       .eq('id', id)

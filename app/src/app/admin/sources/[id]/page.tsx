@@ -48,9 +48,11 @@ export default function EditSourcePage({
   useEffect(() => {
     const fetchData = async () => {
       const supabase = createClient()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const db = supabase as any
 
       // ソース取得
-      const { data: src } = await supabase
+      const { data: src } = await db
         .from('sources')
         .select('id, title, content, created_at, source_type, slack_permalink, metadata')
         .eq('id', id)

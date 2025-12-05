@@ -41,8 +41,10 @@ export async function POST(request: NextRequest) {
     const { session_id, message_id, rating, comment, question, answer, source_ids } = parsed.data
 
     const supabase = createServiceClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
 
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from('feedbacks')
       .insert({
         session_id,

@@ -55,7 +55,9 @@ export async function POST(request: NextRequest) {
 
     // チャットログを保存
     const supabase = createServiceClient()
-    await supabase.from('chat_logs').insert({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
+    await db.from('chat_logs').insert({
       session_id,
       mode: 'question',
       question: message,
@@ -66,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     // ソースの詳細情報を取得
     const sourceIds = result.sources.map(s => s.id)
-    const { data: sourceDetails } = await supabase
+    const { data: sourceDetails } = await db
       .from('sources')
       .select('id, title, content, metadata, slack_permalink')
       .in('id', sourceIds)

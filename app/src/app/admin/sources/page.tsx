@@ -25,6 +25,9 @@ export default async function AdminSourcesPage({
     redirect('/admin/login')
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any
+
   const params = await searchParams
   const searchQuery = params.q || ''
   const phaseFilter = params.phase || ''
@@ -32,7 +35,7 @@ export default async function AdminSourcesPage({
   const posterFilter = params.poster || ''
 
   // ソース取得
-  let query = supabase
+  let query = db
     .from('sources')
     .select('*')
     .eq('is_active', true)

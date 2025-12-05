@@ -164,9 +164,11 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = createServiceClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
 
     // チャンネル情報取得
-    const { data: channel, error: channelError } = await supabase
+    const { data: channel, error: channelError } = await db
       .from('slack_channels')
       .select('*')
       .eq('id', channel_id)
@@ -192,7 +194,7 @@ export async function POST(request: NextRequest) {
     console.log('[Slack Sync] Fetching messages from Slack channel:', channel.slack_channel_id)
 
     // 同期ログ開始
-    const { data: syncLog } = await supabase
+    const { data: syncLog } = await db
       .from('slack_sync_logs')
       .insert({
         channel_id: channel.id,
@@ -239,7 +241,7 @@ export async function POST(request: NextRequest) {
       if (!slackData.ok) {
         console.error('[Slack Sync] Slack API Error:', slackData)
         if (syncLog) {
-          await supabase
+          await db
             .from('slack_sync_logs')
             .update({
               status: 'failed',
@@ -293,7 +295,7 @@ export async function POST(request: NextRequest) {
 
       try {
         // 既存チェック（アクティブなソースのみ）
-        const { data: existing } = await supabase
+        const { data: existing } = await db
           .from('sources')
           .select('id')
           .eq('slack_message_id', msg.ts)
@@ -316,7 +318,7 @@ export async function POST(request: NextRequest) {
         console.log(`[Slack Sync] Embedding generated, length: ${embedding.length}`)
 
         // ソース登録（内容部分のみを保存）
-        const { error: insertError } = await supabase.from('sources').insert({
+        const { error: insertError } = await db.from('sources').insert({
           title: parsed.title,
           content: parsed.content, // *内容* 以降のみ（重複なし）
           source_type: 'slack',
@@ -356,7 +358,7 @@ export async function POST(request: NextRequest) {
     }
 
     // チャンネルの最終同期時刻を更新
-    await supabase
+    await db
       .from('slack_channels')
       .update({
         last_synced_at: new Date().toISOString(),
@@ -366,7 +368,7 @@ export async function POST(request: NextRequest) {
 
     // 同期ログ更新（成功）
     if (syncLog) {
-      await supabase
+      await db
         .from('slack_sync_logs')
         .update({
           messages_fetched: allMessages.length,

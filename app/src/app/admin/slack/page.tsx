@@ -51,10 +51,12 @@ export default function AdminSlackPage() {
   const fetchData = async () => {
     setIsLoading(true)
     const supabase = createClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
 
     const [channelsRes, settingsRes] = await Promise.all([
-      supabase.from('slack_channels').select('*').order('channel_name'),
-      supabase.from('slack_settings').select('*').single(),
+      db.from('slack_channels').select('*').order('channel_name'),
+      db.from('slack_settings').select('*').single(),
     ])
 
     if (channelsRes.data) setChannels(channelsRes.data)
@@ -67,7 +69,9 @@ export default function AdminSlackPage() {
     if (!newChannel.channelId || !newChannel.channelName) return
 
     const supabase = createClient()
-    await supabase.from('slack_channels').insert({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
+    await db.from('slack_channels').insert({
       slack_channel_id: newChannel.channelId,
       channel_name: newChannel.channelName,
       is_active: true,
@@ -80,7 +84,9 @@ export default function AdminSlackPage() {
 
   const handleToggleChannel = async (id: string, isActive: boolean) => {
     const supabase = createClient()
-    await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
+    await db
       .from('slack_channels')
       .update({ is_active: !isActive })
       .eq('id', id)
@@ -91,7 +97,9 @@ export default function AdminSlackPage() {
     if (!confirm('このチャンネルを削除しますか？')) return
 
     const supabase = createClient()
-    await supabase.from('slack_channels').delete().eq('id', id)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
+    await db.from('slack_channels').delete().eq('id', id)
     fetchData()
   }
 
@@ -119,7 +127,9 @@ export default function AdminSlackPage() {
     if (!settings) return
 
     const supabase = createClient()
-    await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
+    await db
       .from('slack_settings')
       .update(updates)
       .eq('id', settings.id)
