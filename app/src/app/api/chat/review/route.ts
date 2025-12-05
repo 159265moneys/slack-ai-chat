@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     const parsed = reviewSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Validation Error', message: parsed.error.errors[0].message },
+        { error: 'Validation Error', message: parsed.error.issues[0].message },
         { status: 400 }
       )
     }

@@ -76,35 +76,33 @@ export default async function AdminSourcesPage({
   }
   
   // メタデータからユニークな値を取得
-  type SourceMetadata = { phase?: string; company?: string; poster?: string }
-  type SourceItem = { metadata?: SourceMetadata }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sourceList = (sources || []) as any[]
   
-  const phases = [...new Set(
-    sources
-      ?.map((s: SourceItem) => s.metadata?.phase)
-      .filter((p: string | undefined) => p && p !== '無記載') || []
+  const phases: string[] = [...new Set(
+    sourceList
+      .map(s => s.metadata?.phase as string | undefined)
+      .filter((p): p is string => Boolean(p && p !== '無記載'))
   )].sort()
   
   // 会社名は正規化してユニーク化
-  const rawCompanies = sources
-    ?.map((s: SourceItem) => s.metadata?.company)
-    .filter((c: string | undefined) => c && c !== '無記載') || []
+  const rawCompanies: string[] = sourceList
+    .map(s => s.metadata?.company as string | undefined)
+    .filter((c): c is string => Boolean(c && c !== '無記載'))
   
   const companyMap = new Map<string, string>()
-  rawCompanies.forEach((company: string | undefined) => {
-    if (company) {
-      const normalized = normalizeCompanyName(company)
-      if (normalized && !companyMap.has(normalized)) {
-        companyMap.set(normalized, normalized)
-      }
+  rawCompanies.forEach((company) => {
+    const normalized = normalizeCompanyName(company)
+    if (normalized && !companyMap.has(normalized)) {
+      companyMap.set(normalized, normalized)
     }
   })
-  const companies = [...companyMap.values()].sort()
+  const companies: string[] = [...companyMap.values()].sort()
   
-  const posters = [...new Set(
-    sources
-      ?.map((s: SourceItem) => s.metadata?.poster)
-      .filter((p: string | undefined) => p && p !== '無記載') || []
+  const posters: string[] = [...new Set(
+    sourceList
+      .map(s => s.metadata?.poster as string | undefined)
+      .filter((p): p is string => Boolean(p && p !== '無記載'))
   )].sort()
 
   return (

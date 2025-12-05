@@ -58,23 +58,26 @@ export default function QuestionPage() {
   useEffect(() => {
     const fetchFilterOptions = async () => {
       const supabase = createClient()
-      const { data: sources } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const db = supabase as any
+      const { data: sources } = await db
         .from('sources')
         .select('metadata')
         .eq('is_active', true)
       
       if (sources) {
-        type Metadata = { phase?: string; company?: string }
-        const phases = [...new Set(
-          sources
-            .map(s => (s.metadata as Metadata)?.phase)
-            .filter(p => p && p !== '無記載')
-        )].sort() as string[]
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sourceList = sources as any[]
+        const phases: string[] = [...new Set(
+          sourceList
+            .map(s => s.metadata?.phase as string | undefined)
+            .filter((p): p is string => Boolean(p && p !== '無記載'))
+        )].sort()
         
         // 会社名を正規化してユニーク化
-        const rawCompanies = sources
-          .map(s => (s.metadata as Metadata)?.company)
-          .filter(c => c && c !== '無記載') as string[]
+        const rawCompanies: string[] = sourceList
+          .map(s => s.metadata?.company as string | undefined)
+          .filter((c): c is string => Boolean(c && c !== '無記載'))
         
         // 正規化した名前でユニーク化（元の名前も保持）
         const companyMap = new Map<string, string>()
@@ -85,7 +88,7 @@ export default function QuestionPage() {
           }
         })
         
-        const companies = [...companyMap.values()].sort()
+        const companies: string[] = [...companyMap.values()].sort()
         
         setFilterOptions({ phases, companies })
       }

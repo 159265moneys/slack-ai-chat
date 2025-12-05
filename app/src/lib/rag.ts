@@ -123,7 +123,8 @@ export async function searchSources(
 
     // コサイン類似度を計算してソート
     const results = data
-      .map(source => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((source: any) => {
         // embeddingが文字列の場合はパース
         let sourceEmbedding: number[]
         if (typeof source.embedding === 'string') {
@@ -160,8 +161,10 @@ export async function searchSources(
           similarity,
         }
       })
-      .filter(s => s.similarity >= matchThreshold)
-      .sort((a, b) => b.similarity - a.similarity)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .filter((s: any) => s.similarity >= matchThreshold)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .sort((a: any, b: any) => b.similarity - a.similarity)
       .slice(0, matchCount)
 
     return results
@@ -185,7 +188,8 @@ export async function searchSources(
     
     const { data: fallbackData } = await fallbackQuery
     
-    return (fallbackData || []).map(s => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (fallbackData || []).map((s: any) => ({
       ...s,
       similarity: 0.7,
     }))

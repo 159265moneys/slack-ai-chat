@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const parsed = questionSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Validation Error', message: parsed.error.errors[0].message },
+        { error: 'Validation Error', message: parsed.error.issues[0].message },
         { status: 400 }
       )
     }
@@ -75,7 +75,8 @@ export async function POST(request: NextRequest) {
 
     // ソース情報をマージ
     const sourcesWithDetails = result.sources.map(s => {
-      const detail = sourceDetails?.find(d => d.id === s.id)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const detail = sourceDetails?.find((d: any) => d.id === s.id)
       return {
         id: s.id,
         title: s.title,
